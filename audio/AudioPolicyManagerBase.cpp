@@ -1618,16 +1618,23 @@ AudioPolicyManagerBase::routing_strategy AudioPolicyManagerBase::getStrategy(
         return STRATEGY_SONIFICATION;
     case AudioSystem::DTMF:
         return STRATEGY_DTMF;
+    case AudioSystem::ENFORCED_AUDIBLE:
+        return STRATEGY_ENFORCED_AUDIBLE;
+#ifdef HAVE_FM_RADIO
+    case AudioSystem::FM:
+        return STRATEGY_MEDIA;
+#else
+    case 0x0A:
+        return STRATEGY_MEDIA;
+#endif
     default:
-        LOGE("unknown stream type");
+        LOGW("unknown stream type 0x%x", (uint32_t) stream);
     case AudioSystem::SYSTEM:
         // NOTE: SYSTEM stream uses MEDIA strategy because muting music and switching outputs
         // while key clicks are played produces a poor result
     case AudioSystem::TTS:
     case AudioSystem::MUSIC:
         return STRATEGY_MEDIA;
-    case AudioSystem::ENFORCED_AUDIBLE:
-        return STRATEGY_ENFORCED_AUDIBLE;
     }
 }
 
