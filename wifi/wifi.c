@@ -161,7 +161,7 @@ static int rmmod(const char *modname)
     if (ret != 0)
         LOGD("Unable to unload driver module \"%s\": %s\n",
              modname, strerror(errno));
-    return ret;
+    return 0;
 }
 
 int do_dhcp_request(int *ipaddr, int *gateway, int *mask,
