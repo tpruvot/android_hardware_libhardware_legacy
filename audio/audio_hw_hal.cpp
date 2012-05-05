@@ -15,7 +15,7 @@
  */
 
 #define LOG_TAG "legacy_audio_hw_hal"
-//#define LOG_NDEBUG 0
+#define LOG_NDEBUG 0
 
 #include <stdint.h>
 
@@ -373,7 +373,7 @@ static int adev_set_parameters(struct audio_hw_device *dev, const char *kvpairs)
     struct legacy_audio_device *ladev = to_ladev(dev);
 #ifdef NO_SCREEN_STATE_KEY_SUPPORT
     // ignore screen_state=off/on new ics key
-    if (strncmp(kvpairs, "screen_state=", 13) == 0 && strlen(kvpairs) <= 16) {
+    if (strncmp(kvpairs, "screen_state=", 13) == 0 && strlen(kvpairs) <= 17) {
         LOGV("%s:%d %s (ignored)", __FUNCTION__, __LINE__, kvpairs);
         return 0;
     }
