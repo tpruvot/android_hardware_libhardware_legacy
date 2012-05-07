@@ -161,7 +161,7 @@ static int rmmod(const char *modname)
     if (ret != 0)
         LOGD("Unable to unload driver module \"%s\": %s\n",
              modname, strerror(errno));
-    return 0;
+    return ret;
 }
 
 int do_dhcp_request(int *ipaddr, int *gateway, int *mask,
@@ -231,6 +231,7 @@ int wifi_load_driver()
     char module_arg[PROPERTY_VALUE_MAX];
 
     if (is_wifi_driver_loaded()) {
+        property_set(DRIVER_PROP_NAME, "ok");
         return 0;
     }
 
@@ -353,6 +354,7 @@ int wifi_load_hotspot_driver()
     char module_arg[PROPERTY_VALUE_MAX];
 
     if (is_wifi_hotspot_driver_loaded()) {
+        property_set(AP_DRIVER_PROP_NAME, "ok");
         return 0;
     }
 
@@ -392,7 +394,7 @@ int wifi_load_hotspot_driver()
         usleep(200000);
     }
     property_set(AP_DRIVER_PROP_NAME, "timeout");
-    wifi_unload_driver();
+    wifi_unload_hotspot_driver();
     return -1;
 #endif
 }
