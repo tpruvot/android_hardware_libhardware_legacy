@@ -306,11 +306,14 @@ physical(int state) {
     close(fd_Physical);
     return 0;
 }
+#endif
 
+#ifdef USE_UNSTABLE_MEMORY_STATE
 int
 set_unstable_memory_state(int state) {
     LOGW("UnstableMemory(%d)", state);
 
+#ifdef QCOM_HARDWARE
     if(state == 0) {
         if(logical(0) != 0) {
             return -1;
@@ -329,6 +332,7 @@ set_unstable_memory_state(int state) {
             return -1;
         }
     }
+#endif
     return 0;
 }
 #endif

@@ -40,7 +40,10 @@ int set_screen_state(int on);
 // set how long to stay awake after the last user activity in seconds
 int set_last_user_activity_timeout(int64_t delay);
 
-#ifdef QCOM_HARDWARE
+// stub only for non qcom
+#define USE_UNSTABLE_MEMORY_STATE
+
+#ifdef USE_UNSTABLE_MEMORY_STATE
 // 1/true to Activate Unstable Memory Block
 // 0/false to Disable Unstable Memory Block
 int set_unstable_memory_state(int state);
