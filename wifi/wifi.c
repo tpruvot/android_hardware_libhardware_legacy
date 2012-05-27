@@ -255,7 +255,6 @@ int wifi_load_driver()
     char module_arg2[256];
 
     if (is_wifi_driver_loaded()) {
-        property_set(DRIVER_PROP_NAME, "ok");
         return 0;
     }
 
@@ -315,9 +314,6 @@ int wifi_load_driver()
 
 int wifi_unload_driver()
 {
-    if (!is_wifi_driver_loaded()) {
-        return 0;
-    }
     usleep(200000); /* allow to finish interface down */
 #ifdef WIFI_DRIVER_MODULE_PATH
     if (rmmod(DRIVER_MODULE_NAME) == 0) {
@@ -388,7 +384,6 @@ int wifi_load_hotspot_driver()
     char module_arg[PROPERTY_VALUE_MAX];
 
     if (is_wifi_hotspot_driver_loaded()) {
-        property_set(AP_DRIVER_PROP_NAME, "ok");
         return 0;
     }
 
@@ -440,9 +435,6 @@ int wifi_unload_hotspot_driver()
 #ifndef WIFI_AP_DRIVER_MODULE_PATH
     return wifi_unload_driver();
 #else
-    if (!is_wifi_hotspot_driver_loaded()) {
-        return 0;
-    }
     usleep(200000); /* allow to finish interface down */
     if (rmmod(AP_DRIVER_MODULE_NAME) == 0) {
         int count = 20; /* wait at most 10 seconds for completion */
@@ -988,6 +980,14 @@ int wifi_change_fw_path(const char *fwpath)
 
     if (!fwpath)
         return ret;
+
+    if (!is_wifi_driver_loaded()) {
+        LOGD("Loading wifi driver so that we may set the fw path");
+        if (wifi_load_driver() != 0) {
+            LOGE("Could not load wifi driver!");
+        }
+    }
+
     fd = open(WIFI_DRIVER_FW_PATH_PARAM, O_WRONLY);
     if (fd < 0) {
         LOGE("Failed to open wlan fw path param (%s)", strerror(errno));
