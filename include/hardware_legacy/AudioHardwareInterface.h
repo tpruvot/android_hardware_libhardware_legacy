@@ -114,9 +114,7 @@ public:
      * get the local time at which the next write to the audio driver will be
      * presented
      */
-#ifndef ICS_AUDIO_BLOB
     virtual status_t    getNextWriteTimestamp(int64_t *timestamp);
-#endif
 
 };
 
@@ -218,6 +216,7 @@ public:
      */
     virtual status_t    setMasterVolume(float volume) = 0;
 
+#ifndef USES_AUDIO_LEGACY
     /**
      * Get the current master volume value for the HAL, if the HAL supports
      * master volume control.  AudioFlinger will query this value from the
@@ -225,6 +224,7 @@ public:
      * the initial master volume across all HALs.
      */
     virtual status_t    getMasterVolume(float *volume) = 0;
+#endif
 
     /**
      * setMode is called when the audio mode changes. NORMAL mode is for
