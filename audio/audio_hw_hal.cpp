@@ -392,6 +392,13 @@ static int adev_get_mic_mute(const struct audio_hw_device *dev, bool *state)
 static int adev_set_parameters(struct audio_hw_device *dev, const char *kvpairs)
 {
     struct legacy_audio_device *ladev = to_ladev(dev);
+#ifdef MISSING_PARAMS
+    // ignore screen_state=off/on new ics key
+    if (strncmp(kvpairs, "screen_state=", 13) == 0 && strlen(kvpairs) <= 16) {
+        ALOGV("%s:%d %s (ignored)", __FUNCTION__, __LINE__, kvpairs);
+        return 0;
+    }
+#endif
     return ladev->hwif->setParameters(String8(kvpairs));
 }
 
@@ -453,6 +460,7 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
                                                     &config->channel_mask,
                                                     &config->sample_rate, &status);
 #else
+    *channels = *channels << 2;
     out->legacy_out = ladev->hwif->openOutputStream(devices, format, channels,
                                                     sample_rate, &status);
 #endif

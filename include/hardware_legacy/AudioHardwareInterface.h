@@ -217,7 +217,7 @@ public:
      * the software mixer will emulate this capability.
      */
     virtual status_t    setMasterVolume(float volume) = 0;
-
+#ifndef ICS_AUDIO_BLOB
     /**
      * Get the current master volume value for the HAL, if the HAL supports
      * master volume control.  AudioFlinger will query this value from the
@@ -225,7 +225,7 @@ public:
      * the initial master volume across all HALs.
      */
     virtual status_t    getMasterVolume(float *volume) = 0;
-
+#endif
     /**
      * setMode is called when the audio mode changes. NORMAL mode is for
      * standard audio playback, RINGTONE when a ringtone is playing, and IN_CALL

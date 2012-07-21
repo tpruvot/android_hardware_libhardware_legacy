@@ -129,13 +129,13 @@ size_t AudioHardwareBase::getInputBufferSize(uint32_t sampleRate, int format, in
 
     return 320;
 }
-
+#ifndef ICS_AUDIO_BLOB
 // default implementation is unsupported
 status_t AudioHardwareBase::getMasterVolume(float *volume)
 {
     return INVALID_OPERATION;
 }
-
+#endif
 status_t AudioHardwareBase::dumpState(int fd, const Vector<String16>& args)
 {
     const size_t SIZE = 256;
