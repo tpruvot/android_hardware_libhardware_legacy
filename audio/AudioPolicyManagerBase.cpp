@@ -15,9 +15,9 @@
  */
 
 #define LOG_TAG "AudioPolicyManagerBase"
-//#define LOG_NDEBUG 0
-
+#define LOG_NDEBUG 0
 //#define VERY_VERBOSE_LOGGING
+
 #ifdef VERY_VERBOSE_LOGGING
 #define ALOGVV ALOGV
 #else
@@ -1987,12 +1987,17 @@ AudioPolicyManagerBase::routing_strategy AudioPolicyManagerBase::getStrategy(
     case AudioSystem::DTMF:
         return STRATEGY_DTMF;
     default:
-        ALOGE("unknown stream type");
+        ALOGE("unknown stream type 0x%x", (uint32_t) stream);
     case AudioSystem::SYSTEM:
         // NOTE: SYSTEM stream uses MEDIA strategy because muting music and switching outputs
         // while key clicks are played produces a poor result
     case AudioSystem::TTS:
     case AudioSystem::MUSIC:
+#ifdef HAVE_FM_RADIO
+    case AudioSystem::FM:
+#else
+    case 0x0A:
+#endif
         return STRATEGY_MEDIA;
     case AudioSystem::ENFORCED_AUDIBLE:
         return STRATEGY_ENFORCED_AUDIBLE;
@@ -2459,6 +2464,10 @@ float AudioPolicyManagerBase::volIndexToAmpl(audio_devices_t device, const Strea
 {
     device_category deviceCategory = getDeviceCategory(device);
     const VolumeCurvePoint *curve = streamDesc.mVolumeCurve[deviceCategory];
+    if (!curve) {
+        ALOGE("%s: unable to retrieve volume curve", __FUNCTION__);
+        return 0.0f;
+    }
 
     // the volume index in the UI is relative to the min and max volume indices for this stream type
     int nbSteps = 1 + curve[VOLMAX].mIndex -
@@ -2587,6 +2596,13 @@ const AudioPolicyManagerBase::VolumeCurvePoint
         sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
         sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
     },
+#ifdef HAVE_FM_RADIO
+    { // AUDIO_STREAM_FM
+        sDefaultMediaVolumeCurve, // DEVICE_CATEGORY_HEADSET
+        sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
+        sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
+    },
+#endif
 };
 
 void AudioPolicyManagerBase::initializeVolumeCurves()
@@ -3264,6 +3280,11 @@ const struct StringToEnum sDeviceNameToEnumTable[] = {
     STRING_TO_ENUM(AUDIO_DEVICE_IN_AUX_DIGITAL),
     STRING_TO_ENUM(AUDIO_DEVICE_IN_VOICE_CALL),
     STRING_TO_ENUM(AUDIO_DEVICE_IN_BACK_MIC),
+#ifdef HAVE_FM_RADIO
+    STRING_TO_ENUM(AUDIO_DEVICE_OUT_FM),
+    STRING_TO_ENUM(AUDIO_DEVICE_OUT_FM_SPEAKER),
+    STRING_TO_ENUM(AUDIO_DEVICE_IN_FM_RX),
+#endif
 };
 
 const struct StringToEnum sFlagNameToEnumTable[] = {
