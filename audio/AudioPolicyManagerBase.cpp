@@ -15,9 +15,9 @@
  */
 
 #define LOG_TAG "AudioPolicyManagerBase"
-#define LOG_NDEBUG 0
-//#define VERY_VERBOSE_LOGGING
+//#define LOG_NDEBUG 0
 
+//#define VERY_VERBOSE_LOGGING
 #ifdef VERY_VERBOSE_LOGGING
 #define ALOGVV ALOGV
 #else
@@ -2596,13 +2596,11 @@ const AudioPolicyManagerBase::VolumeCurvePoint
         sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
         sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
     },
-#ifdef HAVE_FM_RADIO
-    { // AUDIO_STREAM_FM
+    { // AUDIO_STREAM_FM (no ifdef here, static arrays)
         sDefaultMediaVolumeCurve, // DEVICE_CATEGORY_HEADSET
         sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
         sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
     },
-#endif
 };
 
 void AudioPolicyManagerBase::initializeVolumeCurves()
