@@ -610,8 +610,8 @@ static int legacy_adev_open(const hw_module_t* module, const char* name,
     ladev->device.get_parameters = adev_get_parameters;
     ladev->device.get_input_buffer_size = adev_get_input_buffer_size;
     ladev->device.open_output_stream = adev_open_output_stream;
-    ladev->device.close_output_stream = adev_close_output_stream;
     ladev->device.open_input_stream = adev_open_input_stream;
+    ladev->device.close_output_stream = adev_close_output_stream;
     ladev->device.close_input_stream = adev_close_input_stream;
     ladev->device.dump = adev_dump;
 
